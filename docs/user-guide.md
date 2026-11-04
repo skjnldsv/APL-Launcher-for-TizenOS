@@ -39,7 +39,7 @@ Hold **OK** on an app for half a second:
 
 ## Profiles
 
-The avatar at the top right, next to the clock, opens the household profiles. Each person gets their own:
+Household profiles open from the avatar in Control Center, or from Settings. With two profiles or more, the current one's avatar also shows at the top right, next to the clock. Each person gets their own:
 - home screen layout;
 - hidden apps;
 - interface preferences;

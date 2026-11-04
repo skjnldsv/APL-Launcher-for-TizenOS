@@ -135,6 +135,8 @@ html, body {
     box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
 }
 .mode-full .status, .mode-grid .status { opacity: 0; }
+.status.is-alone { padding-right: 24px; }          /* a single profile: no avatar (profiles.js) */
+.status.is-alone .status__avatar { display: none; }
 
 /* ===================== FULL-SCREEN HINT ===================== */
 .hint {
