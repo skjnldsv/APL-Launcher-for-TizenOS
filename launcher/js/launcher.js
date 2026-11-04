@@ -1063,7 +1063,8 @@
        another press opens / closes Control Center, like the TV button on Apple TV. */
     var lastShown = Date.now(), switcherOnShow = false;
     document.addEventListener("visibilitychange", function () {
-        if (document.hidden) return;
+        // An app opens over the Home Screen: coming back, it is at rest again, not still in full screen
+        if (document.hidden) { if (mode === "full") setMode("shelf"); return; }
         lastShown = Date.now();
         hideVeil();
         setTimeout(function () { bootCleanup(8); }, 25000);
@@ -1108,9 +1109,9 @@
         }
         if (!document.hidden && Date.now() - lastShown > 1500) {
             if (APL.switcher && APL.switcher.isOpen()) { APL.switcher.close(); return; }
-            if (APL.screensaver && APL.screensaver.isActive()) { APL.screensaver.stop(); return; }
-            if (APL.settings && APL.settings.isOpen()) APL.settings.close();
-            if (APL.controlCenter && APL.controlCenter.isOpen()) APL.controlCenter.close();
+            // Home from anywhere in the launcher (deep in Settings, full screen, Sources…): the Home Screen
+            // at rest, on its first app
+            APL.goHome();
         } else {
             lastShown = Date.now();
         }
