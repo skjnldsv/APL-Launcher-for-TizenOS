@@ -249,11 +249,13 @@ namespace APL
                 return;
             }
             // On a home screen, Home does its job at once. An app in front has to wait.
-            bool onHome = key.Foreground == Launcher || IsSamsungHome(key.Foreground);
-            if (onHome) OpenLauncher();
+            bool launcherFront = key.Foreground == Launcher;
+            bool onHome = launcherFront || IsSamsungHome(key.Foreground);
+            if (launcherFront) await LauncherKey(Blue);     // back to the Home Screen at rest
+            else if (onHome) OpenLauncher();
             Press press = await Classify(key.Time);
             if (press == Press.Long) OpenControlCenter(key);
-            else if (press == Press.Double) OpenLauncher("switcher");
+            else if (press == Press.Double) { if (launcherFront) await LauncherKey(Green); else OpenLauncher("switcher"); }
             else if (!onHome) OpenLauncher();
         }
 
@@ -277,7 +279,7 @@ namespace APL
         /// <summary>The launcher has its own: this panel is for what plays over an app.</summary>
         private void OpenControlCenter(Vetro.KeyEvent key)
         {
-            if (key.Foreground == Launcher) OpenLauncher("controlcenter");
+            if (key.Foreground == Launcher) _ = LauncherKey(Red);
             else panel.Open();
         }
 
@@ -290,6 +292,18 @@ namespace APL
         {
             Note("⏯ to " + key.Foreground);
             return Vetro.Exec("/usr/bin/input_keyevent XF86PlayBack >/dev/null 2>&1");
+        }
+
+        /// <summary>
+        /// The launcher in front gets Home's actions as keys: a launch request to the app already in
+        /// front never reaches the page on some screens (The Frame 2025), an injected key does, and
+        /// Vetro lets it through (it filters the remote's device only). launcher/js/launcher.js: blue
+        /// for Home, green for the App Switcher, red for the Control Center.
+        /// </summary>
+        private const string Red = "XF86Red", Green = "XF86Green", Blue = "XF86Blue";
+        private static Task LauncherKey(string name)
+        {
+            return Vetro.Exec("/usr/bin/input_keyevent " + name + " >/dev/null 2>&1");
         }
 
         /// <summary>SkipReload: an app already open comes back as it was, video included, as in launcher/js/apps.js.</summary>

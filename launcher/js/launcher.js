@@ -1129,6 +1129,19 @@
             if (APL.controlCenter) APL.controlCenter.toggle();
             return true;
         }
+        // Home with the launcher in front: some screens never pass a launch request to the page in
+        // front (The Frame 2025), so the Overlay presses blue for Home and green for the App Switcher
+        // (red, above, for the Control Center).
+        if (code === K.BLUE) {
+            if (APL.switcher && APL.switcher.isOpen()) APL.switcher.close();
+            else APL.goHome();
+            return true;
+        }
+        if (code === K.GREEN) {
+            if (APL.controlCenter && APL.controlCenter.isOpen()) APL.controlCenter.close();
+            if (APL.switcher && !APL.switcher.isOpen()) APL.switcher.open();
+            return true;
+        }
         return false;
     });
 
