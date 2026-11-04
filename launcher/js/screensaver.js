@@ -190,7 +190,12 @@
         if (active) clock();
     }, 10000);
 
-    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") stop(); });
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") stop();
+        else lastInput = Date.now();          // back from an app: the idle time starts now, not from the last key here
+    });
+    // Home, and the launcher's other requests, come as an app control rather than a key: they count as input too
+    global.addEventListener("appcontrol", function () { lastInput = Date.now(); });
 
     APL.screensaver = { start: start, stop: stop, isActive: function () { return active; } };
 })(window);
