@@ -41,6 +41,10 @@
         dom.shelfInfo = $("shelfInfo");
         dom.shelfTitle = $("shelfTitle");
         dom.shelfMeta = $("shelfMeta");
+        var open = document.createElement("div");                          // "OK to open", in full screen (openHint)
+        open.className = "shelfinfo__open";
+        open.textContent = APL.t("OK to Open");
+        dom.shelfInfo.appendChild(open);
         dom.clock = $("clock");
         dom.toast = $("toast");
         dom.boot = $("boot");
@@ -331,6 +335,7 @@
         dom.body.classList.remove("mode-shelf", "mode-grid", "mode-full");
         dom.body.classList.add("mode-" + m);
         layout();
+        if (dom.shelfInfo && nav) openHint();
     }
 
     function layout() {
@@ -364,7 +369,15 @@
         im.onerror = function () { item.bad = true; if (apps[nav.index] === app) setLiveBackdrop(app, item, n, items, tries); };
         im.src = item.bg;
     }
-    var liveShown = null;                                 // the Top Shelf item on screen: OK opens it if it can
+    var liveShown = null;                                 // the Top Shelf item on screen: in full screen, OK opens it if it can
+    function openable(app) {
+        var shown = mode === "full" && liveShown && liveShown.app === app && bgActive.dataset.app === liveShown.tag ? liveShown.item : null;
+        return shown && shown.link && APL.launchDeepLink ? shown : null;
+    }
+    /* Full screen on an item that opens directly: say so under its title. */
+    function openHint() {
+        dom.shelfInfo.classList.toggle("can-open", !!openable(apps[nav.index]));
+    }
     function swapLive(app, item, n) {
         var tag = app.id + "#" + n;
         liveShown = { app: app, item: item, tag: tag };
@@ -386,6 +399,7 @@
         if (!has) return;
         dom.shelfTitle.textContent = item.title;
         dom.shelfMeta.textContent = APL.live.metaOf(item);
+        openHint();
     }
 
     /* A new full-screen image costs 100 ms: as rarely as possible, and never while navigating. */
@@ -454,9 +468,10 @@
         if (APL.sys.PREVIEW) { toast(APL.t("Preview: on your TV, “{name}” would open now", { name: apps[i].name })); return; }
         showVeil();
         var id = apps[i].id;
-        // Your own item in the Top Shelf (Plex's Continue Watching, a Spotify mix): straight to it
-        var shown = liveShown && liveShown.app === apps[i] && bgActive.dataset.app === liveShown.tag ? liveShown.item : null;
-        if (shown && shown.link && APL.launchDeepLink) {
+        // Your own item, enlarged with ▲ (Plex's Continue Watching, a Spotify mix): straight to it.
+        // From the dock, OK opens the app as usual.
+        var shown = openable(apps[i]);
+        if (shown) {
             APL.launchDeepLink(id, shown.link).catch(function () { APL.launchApp(id).catch(function (err) { hideVeil(); toast(err.message || APL.t("Couldn't open the app")); }); });
             return;
         }

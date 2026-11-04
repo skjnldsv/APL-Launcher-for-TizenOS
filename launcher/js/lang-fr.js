@@ -16,6 +16,7 @@ window.APL_LANG_FR = {
     "{n} app closed: {mb} MB freed": "{n} app fermée : {mb} Mo libérés",
     "Settings": "Réglages",
     "Press ▲ for full screen": "Appuyez sur ▲ pour passer en plein écran",
+    "OK to Open": "OK pour ouvrir",
     "Edit Home Screen": "Modifier l'écran d'accueil",
     "Rename": "Renommer",
     "Delete Folder": "Supprimer le dossier",
