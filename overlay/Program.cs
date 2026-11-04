@@ -40,6 +40,8 @@ namespace APL
         private static VconfChanged fullscreenChanged;
         private Timer homeCheck;
         private bool returnToLauncher = true;
+        // Settings › ⏯ in Apps: Play and Pause (false: the Control Center, as by default)
+        private bool pauseInApps;
         // The Smart Hub tile opened Samsung's home on purpose: leave it until something else is in front
         private bool samsungHomeWanted;
         private Alexa alexa;
@@ -112,6 +114,8 @@ namespace APL
             string back = Extra(e, "apl_return");
             if (!string.IsNullOrEmpty(theme)) panel.SetTheme(theme == "light");
             if (!string.IsNullOrEmpty(back)) returnToLauncher = back == "1";
+            string pause = Extra(e, "apl_pause");
+            if (!string.IsNullOrEmpty(pause)) pauseInApps = pause == "playpause";
             string lang = Extra(e, "apl_lang");
             // A new language renames the Echo's own plugs (Screen, Home…): forgetting the list starts them again below
             if (!string.IsNullOrEmpty(lang) && Text.SetLanguage(lang)) alexaList = null;
@@ -211,6 +215,7 @@ namespace APL
                 {
                     case RemoteKeys.Pause:
                         if (panel.IsOpen) panel.Close();
+                        else if (pauseInApps && key.Foreground != Launcher && !IsSamsungHome(key.Foreground)) await PlayPause(key);
                         else OpenControlCenter(key);
                         break;
                     case RemoteKeys.TvPlus:
@@ -274,6 +279,17 @@ namespace APL
         {
             if (key.Foreground == Launcher) OpenLauncher("controlcenter");
             else panel.Open();
+        }
+
+        /// <summary>
+        /// Settings › ⏯ in Apps › Play and Pause: ⏯ in an app is the app's own. Vetro took the remote's
+        /// key, so the same key is sent again as an injected one, which Vetro lets through (it filters the
+        /// remote's device only). The Control Center stays on Home held and the red key there.
+        /// </summary>
+        private Task PlayPause(Vetro.KeyEvent key)
+        {
+            Note("⏯ to " + key.Foreground);
+            return Vetro.Exec("/usr/bin/input_keyevent XF86PlayBack >/dev/null 2>&1");
         }
 
         /// <summary>SkipReload: an app already open comes back as it was, video included, as in launcher/js/apps.js.</summary>

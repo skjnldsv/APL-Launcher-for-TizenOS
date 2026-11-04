@@ -50,6 +50,7 @@
             var data = [new T.ApplicationControlData("apl_action", ["stay"]),
                         new T.ApplicationControlData("apl_theme", [light ? "light" : "dark"]),
                         new T.ApplicationControlData("apl_return", [sys.pref("homeReturn") ? "1" : "0"]),
+                        new T.ApplicationControlData("apl_pause", [sys.pref("pauseKey") === "playpause" ? "playpause" : "controlcenter"]),
                         new T.ApplicationControlData("apl_alexa_on", [sys.pref("alexaBridge") ? "1" : "0"]),
                         new T.ApplicationControlData("apl_alexa", [alexaList()]),
                         new T.ApplicationControlData("apl_idle", [sys.pref("idleClose") ? String(IDLE_MINUTES) : "0"]),
@@ -122,6 +123,7 @@
     sys.onPref("homeReturn", send);
     sys.onPref("alexaBridge", send);
     sys.onPref("idleClose", send);
+    sys.onPref("pauseKey", send);
 
     APL.overlay = {
         start: start,

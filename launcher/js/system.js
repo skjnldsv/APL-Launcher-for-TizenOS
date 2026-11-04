@@ -59,6 +59,7 @@
         bootCleanup: true,          // once per power-on: closes what Samsung opens on its own
         homeAppSaved: null,         // { home, autostart } before "Start on APL Launcher", put back when it is turned off
         idleClose: true,            // an app left in the background for 10 min is closed (overlay/IdleApps.cs)
+        pauseKey: "controlcenter",  // ⏯ in an app: "controlcenter" | "playpause", the app's own (overlay/Program.cs)
         language: "auto"            // "auto" (screen language) | "en" | "fr": read at start-up by i18n.js
     };
     /* Screen settings (shared) and the settings of each profile in the household:

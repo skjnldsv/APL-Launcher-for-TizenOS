@@ -72,6 +72,8 @@
 
             action(APL.t("Control Center"), function () { APL.settings.close(); APL.controlCenter.open(); },
                 APL.t("Also opens with the ⏯ button on the remote, or by holding Home."), "sliders"),
+            choice(APL.t("⏯ in Apps"), "pauseKey", [["controlcenter", APL.t("Control Center")], ["playpause", APL.t("Play and Pause")]],
+                APL.t("What ⏯ does while an app is in front: the Control Center over it, or the app's own play and pause. On the Home Screen, ⏯ always opens the Control Center, and holding Home opens it everywhere.")),
 
             choice(APL.t("Appearance"), "appearance", [["light", APL.t("Light")], ["dark", APL.t("Dark")], ["auto", APL.t("Automatic")]],
                 APL.t("Light or dark for backgrounds and menus. Automatic switches to dark at sunset and to light at sunrise.")),

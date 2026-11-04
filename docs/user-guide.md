@@ -11,7 +11,7 @@ The interface is in French, so labels are given here in French with their Englis
 | **OK held** | app menu (see below) | — |
 | **Back** | back to the first app; from the first app, back to Samsung | back to the dock |
 | **Home** (Vetro) | opens the launcher; pressed twice: open apps; held: Control Center | |
-| **⏯** or red key | Control Center, over any app (⏯ no longer pauses videos) | |
+| **⏯** or red key | Control Center, over any app (⏯ no longer pauses videos, unless *Settings › ⏯ in Apps* is set to *Play and Pause*) | |
 | **Samsung TV Plus** | AquaPlay | |
 | **Prime Video** | TizenTube | |
 
