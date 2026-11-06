@@ -620,7 +620,7 @@ html, body {
 /* ===================== PERFORMANCE MODE (the default on the screen) =====================
    Real-time blur (backdrop-filter, filter: blur) is what made things lag:
    it is replaced by equivalent opaque backgrounds, and shadows are lightened. */
-.perf .dock, .perf .status, .perf .settings__bg, .perf .toast {
+.perf .dock, .perf .status, .perf .search-hint, .perf .settings__bg, .perf .toast {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
 }
@@ -853,15 +853,18 @@ html, body {
 .search__results .tile__label { opacity: 1; }
 .search__empty { position: absolute; top: 330px; left: 90px; font-size: 26px; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
 .has-search .shelfinfo, .has-search .home, .has-search .status, .has-search .hint { opacity: 0; }
-/* Search's hint, top left across from the status pill: a magnifier on the Home Screen, "▲ Search" in full screen */
-.search-hint { position: fixed; top: 50px; left: 42px; z-index: 9; height: 60px; padding: 0 18px; display: flex; align-items: center; gap: 10px; border-radius: 30px;
-    background: rgba(26, 28, 36, 0.68); color: rgba(255, 255, 255, 0.9); font-size: 24px; font-weight: 600; transition: opacity 400ms ease; pointer-events: none; }
+/* Search's hint, top left across from the status pill and in its glass (shared rules below): a magnifier on
+   the Home Screen, "▲ Search" in full screen */
+.search-hint { position: fixed; top: 50px; left: 42px; z-index: 10; height: 60px; min-width: 60px; padding: 0 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+    border-radius: 30px; color: rgba(255, 255, 255, 0.95); font-size: 24px; font-weight: 500; transition: opacity 400ms ease; pointer-events: none;
+    -webkit-backdrop-filter: blur(30px) saturate(1.6); backdrop-filter: blur(30px) saturate(1.6); }
 .search-hint__chevron, .search-hint__text { display: none; }
-.search-hint__chevron { width: 13px; height: 13px; margin: 6px 2px 0 4px; border-left: 3px solid currentColor; border-top: 3px solid currentColor; border-radius: 2px; transform: rotate(45deg); }
+.search-hint__chevron { width: 13px; height: 13px; margin: 6px 2px 0 6px; border-left: 3px solid currentColor; border-top: 3px solid currentColor; border-radius: 2px; transform: rotate(45deg); }
+.mode-full .search-hint { padding: 0 24px 0 16px; }
 .mode-full .search-hint__chevron, .mode-full .search-hint__text { display: block; }
 .mode-grid .search-hint, .has-wdg .search-hint, .has-cc .search-hint, .has-sources .search-hint, .has-search .search-hint,
 .has-settings .search-hint, .has-profiles .search-hint { opacity: 0; }
-.theme-light .search-hint { background: rgba(236, 238, 244, 0.7); color: #1c1c1e; }
+.theme-light .search-hint { color: #1d1d1f; }
 .scard.is-focused .scard__art { transform: scale(1.1); box-shadow: 0 34px 60px rgba(0,0,0,0.55); }
 .scard.is-focused .scard__art--glass { background: #f5f5f7; color: #1c1c1e; }
 .scard.is-focused .scard__art--glass .scard__ico { background: rgba(0,0,0,0.07); }
@@ -1071,7 +1074,7 @@ html, body {
    it. Static gradients and a masked rim, no live blur: the same cost with visual effects off (.perf,
    the default on the screen). Declared last, it overrides the glass above. */
 .dock, .perf .dock,
-.status, .perf .status,
+.status, .perf .status, .search-hint, .perf .search-hint,
 .cc__t, .perf .cc__t {
     background:
         radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0) 70%),
@@ -1082,7 +1085,7 @@ html, body {
         inset 0 0 14px rgba(255,255,255,0.07),        /* lensing: the glass a little brighter along its edges */
         0 12px 32px rgba(0,0,0,0.24);
 }
-.dock::before, .status::before, .cc__t::before {
+.dock::before, .status::before, .search-hint::before, .cc__t::before {
     content: "";
     position: absolute;
     top: 0; right: 0; bottom: 0; left: 0;
@@ -1126,6 +1129,7 @@ html, body {
 
 .theme-light .dock, .theme-light.perf .dock,
 .theme-light .status, .theme-light.perf .status,
+.theme-light .search-hint, .theme-light.perf .search-hint,
 .theme-light .cc__t, .theme-light.perf .cc__t {
     background:
         radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 45%, rgba(255,255,255,0.35) 70%),
@@ -1134,7 +1138,7 @@ html, body {
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 14px rgba(255,255,255,0.35), 0 10px 28px rgba(0,0,0,0.12);
 }
 .theme-light .cc__t, .theme-light.perf .cc__t { background-color: rgba(236, 238, 244, 0.6); }
-.theme-light .dock::before, .theme-light .status::before, .theme-light .cc__t::before {
+.theme-light .dock::before, .theme-light .status::before, .theme-light .search-hint::before, .theme-light .cc__t::before {
     background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 25%,
                 rgba(0,0,0,0.04) 55%, rgba(255,255,255,0.25) 80%, rgba(255,255,255,0.6) 100%);
 }
@@ -1148,14 +1152,17 @@ html, body {
         var(--glass-img, none) -42px var(--glass-y, -783px) / 1920px 1080px no-repeat;
 }
 
-/* The status pill: more tint than the dock, the time stays readable over a bright picture (snow, white posters) */
-.status, .perf .status {
+/* The status pill and Search's: with visual effects on, a live blur behind the dock's own tint, clear glass like
+   the dock; off (no blur), more tint, the time stays readable over a bright picture (snow, white posters) */
+.status, .search-hint {
     background:
         radial-gradient(120% 90% at 12% 0%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0) 70%),
         linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%),
-        rgba(26, 28, 36, 0.68);
+        rgba(26, 28, 36, 0.40);
 }
-.theme-light .status, .theme-light.perf .status { background-color: rgba(236, 238, 244, 0.7); }
+.perf .status, .perf .search-hint { background-color: rgba(26, 28, 36, 0.55); }
+.theme-light .status, .theme-light.perf .status,
+.theme-light .search-hint, .theme-light.perf .search-hint { background-color: rgba(236, 238, 244, 0.6); }
 
 /* A round button that is on keeps its color (Game Mode green…), with visual effects off too: the glass
    rules above have the same weight and came later */
